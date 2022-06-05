@@ -1,13 +1,22 @@
 import { useQuery } from "@apollo/client";
 import { Contract } from "@ethersproject/contracts";
-import { shortenAddress, useCall, useEthers, useLookupAddress } from "@usedapp/core";
+import {
+  shortenAddress,
+  useCall,
+  useEthers,
+  useLookupAddress,
+} from "@usedapp/core";
 import React, { useEffect, useState } from "react";
-
-import { Body, Button, Container, Header, Image, Link } from "./components";
 import logo from "./ethereumLogo.png";
+
+import { Container, Button } from "@mui/material";
 
 import { addresses, abis } from "@my-app/contracts";
 import GET_TRANSFERS from "./graphql/subgraph";
+import TokenBalance from "./components/TokenBalance";
+import TokenTransfer from "./components/TokenTransfer";
+import { Box } from "@mui/system";
+import { blueGrey } from "@mui/material/colors";
 
 function WalletButton() {
   const [rendered, setRendered] = useState("");
@@ -33,6 +42,7 @@ function WalletButton() {
 
   return (
     <Button
+      variant="contained"
       onClick={() => {
         if (!account) {
           activateBrowserWallet();
@@ -40,6 +50,7 @@ function WalletButton() {
           deactivate();
         }
       }}
+      sx={{ marginLeft: 3, marginBottom: 3 }}
     >
       {rendered === "" && "Connect Wallet"}
       {rendered !== "" && rendered}
@@ -48,19 +59,23 @@ function WalletButton() {
 }
 
 function App() {
+  const greyblue = blueGrey[900];
   // Read more about useDapp on https://usedapp.io/
   const { error: contractCallError, value: tokenBalance } =
     useCall({
-       contract: new Contract(addresses.ceaErc20, abis.erc20),
-       method: "balanceOf",
-       args: ["0x3f8CB69d9c0ED01923F11c829BaE4D9a4CB6c82C"],
+      contract: new Contract(addresses.dErc, abis.erc20),
+      method: "balanceOf",
+      args: ["0x6B2fdE613D81d55ad84F902758bcbD0b68e3bb20"],
     }) ?? {};
 
   const { loading, error: subgraphQueryError, data } = useQuery(GET_TRANSFERS);
 
   useEffect(() => {
     if (subgraphQueryError) {
-      console.error("Error while querying subgraph:", subgraphQueryError.message);
+      console.error(
+        "Error while querying subgraph:",
+        subgraphQueryError.message
+      );
       return;
     }
     if (!loading && data && data.transfers) {
@@ -69,21 +84,46 @@ function App() {
   }, [loading, subgraphQueryError, data]);
 
   return (
-    <Container>
-      <Header>
+    <Container
+      maxWidth={false}
+      sx={{
+        bgcolor: greyblue,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+        width: "100vw",
+      }}
+    >
+      <Box
+        sx={{
+          width: 500,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <img
+          style={{
+            width: 50,
+            marginBottom: 20,
+          }}
+          src={logo}
+          alt="ethereum-logo"
+        />
         <WalletButton />
-      </Header>
-      <Body>
-        <Image src={logo} alt="ethereum-logo" />
-        <p>
-          Edit <code>packages/react-app/src/App.js</code> and save to reload.
-        </p>
-        <Link href="https://reactjs.org">
-          Learn React
-        </Link>
-        <Link href="https://usedapp.io/">Learn useDapp</Link>
-        <Link href="https://thegraph.com/docs/quick-start">Learn The Graph</Link>
-      </Body>
+      </Box>
+      <Box
+        sx={{
+          minWidth: 550,
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
+        <TokenBalance />
+        <TokenTransfer />
+      </Box>
     </Container>
   );
 }
