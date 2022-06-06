@@ -1,5 +1,19 @@
 This project was bootstrapped with [Create Eth App](https://github.com/paulrberg/create-eth-app).
 
+### Learning Outcomes
+
+Learning outcomes included using useDapp, ethers.js, as well as Create Eth App. Working with Ethereum based tokens (ERC20), browser wallets and web3 and troubleshooting using these technologies. Used to learn smart contract methods and useDapp functions to display balance and enable transfers on Polygons Test network.
+
+### Future Considerations
+
+- Adding ability and UI to swap networks within web app.\
+</br>
+- Add more tokens (Just a matter of getting more standards of test tokens, researching more faucets)
+</br>  
+- Add more styling as well as better UI/UX.
+</br>
+- Refactor and clean up code
+
 ### Prerequisites
 
 - yarn
