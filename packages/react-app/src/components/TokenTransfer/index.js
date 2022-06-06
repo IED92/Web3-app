@@ -8,7 +8,12 @@ import {
   Button,
 } from "@mui/material";
 import { abis, addresses } from "@my-app/contracts";
-import { useEthers, useTokenBalance, useContractFunction } from "@usedapp/core";
+import {
+  useEthers,
+  useTokenBalance,
+  useContractFunction,
+  useToken,
+} from "@usedapp/core";
 import React, { useState } from "react";
 
 const TokenBalance = () => {
@@ -17,6 +22,8 @@ const TokenBalance = () => {
 
   const [sendAddress, setSendAddress] = useState("");
   const [tokenAmount, setTokenAmount] = useState(0);
+
+  const dercInfo = useToken(addresses.dErc);
 
   const erc20_int = new utils.Interface(abis.erc20);
   const contract = new Contract(addresses.dErc, erc20_int);
@@ -53,7 +60,7 @@ const TokenBalance = () => {
             name="tokenAmount"
             required
             id="token-amount"
-            label="Amount of DERC:"
+            label={`Amount of ${dercInfo.symbol}:`}
             type="number"
             value={tokenAmount}
             InputLabelProps={{
